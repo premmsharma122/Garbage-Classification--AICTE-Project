@@ -1,0 +1,128 @@
+GARBAGE CLASSIFICATION SYSTEM - CODE SUMMARY
+============================================
+
+OVERVIEW:
+This project implements a deep learning-based garbage classification system using TensorFlow/Keras with EfficientNetV2B2 as the base model. The system can classify different types of waste materials to help with recycling and waste management.
+
+HOW THE CODE WORKS:
+==================
+
+1. ENVIRONMENT SETUP & IMPORTS:
+   - Installs required packages: seaborn, tensorflow, gradio
+   - Imports essential libraries: numpy, matplotlib, tensorflow, sklearn, gradio
+   - Sets up all necessary modules for deep learning, data visualization, and web interface
+
+2. DATASET CONFIGURATION:
+   - Defines flexible dataset path with multiple alternatives for different environments
+   - Sets image size to 124x124 pixels for model input
+   - Configures batch size (32) and random seed (42) for reproducible results
+   - Automatically searches for dataset in common locations
+
+3. DATA LOADING & PREPROCESSING:
+   - Loads training dataset (80% of data) using tf.keras.utils.image_dataset_from_directory
+   - Loads validation dataset (20% of data) with same configuration
+   - Splits validation set into validation and test sets (50-50 split)
+   - Applies caching and prefetching for optimal performance
+   - Extracts class names from the dataset
+
+4. DATA EXPLORATION & VISUALIZATION:
+   - Displays sample images from each class in a 4x3 grid
+   - Calculates class distribution percentages for train/validation/test sets
+   - Creates bar plots showing class distribution across all datasets
+   - Helps identify class imbalance issues
+
+5. CLASS IMBALANCE HANDLING:
+   - Computes class weights using sklearn's compute_class_weight
+   - Balances the dataset by giving higher weights to underrepresented classes
+   - Creates a dictionary mapping class indices to their respective weights
+
+6. DATA AUGMENTATION:
+   - Implements data augmentation pipeline using Sequential model
+   - Applies random horizontal flip, rotation (10%), zoom (10%), and contrast (10%)
+   - Helps improve model generalization and reduces overfitting
+
+7. MODEL ARCHITECTURE:
+   - Uses EfficientNetV2B2 as base model (pre-trained on ImageNet)
+   - Freezes first 100 layers to retain pre-trained features
+   - Adds custom classification head:
+     * Input layer (124x124x3)
+     * Data augmentation layer
+     * EfficientNetV2B2 base model
+     * Global Average Pooling
+     * Dropout (30% rate)
+     * Dense output layer with softmax activation
+
+8. MODEL COMPILATION:
+   - Uses Adam optimizer with learning rate 1e-4
+   - Sparse categorical crossentropy loss for multi-class classification
+   - Tracks accuracy as the primary metric
+
+9. TRAINING CALLBACKS:
+   - Early stopping: stops training if validation loss doesn't improve for 3 epochs
+   - Learning rate reduction: reduces LR by factor 0.2 if val_loss plateaus
+   - Restores best weights after early stopping
+
+10. MODEL TRAINING:
+    - Trains for 10 epochs with class weights to handle imbalance
+    - Uses validation data for monitoring performance
+    - Plots training/validation accuracy and loss curves
+    - Visualizes learning progress over epochs
+
+11. MODEL EVALUATION:
+    - Evaluates model on test dataset
+    - Generates confusion matrix and classification report
+    - Calculates precision, recall, and F1-score for each class
+    - Visualizes confusion matrix as heatmap
+
+12. PREDICTION VISUALIZATION:
+    - Shows sample predictions on test images
+    - Displays true vs predicted labels with confidence scores
+    - Helps assess model performance visually
+
+13. MODEL SAVING:
+    - Saves trained model in Keras format (.keras file)
+    - Preserves model architecture, weights, and training configuration
+    - Enables easy loading for future inference
+
+14. WEB INTERFACE DEPLOYMENT:
+    - Creates Gradio interface for easy model deployment
+    - Implements classify_image function that:
+      * Resizes input image to 124x124
+      * Applies EfficientNet preprocessing
+      * Makes prediction using trained model
+      * Returns formatted result with confidence score
+    - Launches web interface accessible via browser
+
+KEY FEATURES:
+=============
+- Transfer Learning: Leverages pre-trained EfficientNetV2B2 for better performance
+- Data Augmentation: Improves model robustness against variations
+- Class Balancing: Handles imbalanced datasets using class weights
+- Early Stopping: Prevents overfitting and saves training time
+- Interactive Interface: Easy-to-use web interface for real-world deployment
+- Comprehensive Evaluation: Detailed performance metrics and visualizations
+
+TECHNICAL SPECIFICATIONS:
+========================
+- Framework: TensorFlow/Keras
+- Base Model: EfficientNetV2B2 (ImageNet pre-trained)
+- Input Size: 124x124x3 RGB images
+- Batch Size: 32
+- Optimizer: Adam (lr=1e-4)
+- Loss Function: Sparse Categorical Crossentropy
+- Data Split: 80% train, 10% validation, 10% test
+- Augmentation: Flip, Rotation, Zoom, Contrast
+- Deployment: Gradio web interface
+
+WORKFLOW SUMMARY:
+================
+1. Load and preprocess image dataset
+2. Analyze data distribution and visualize samples
+3. Handle class imbalance with computed weights
+4. Build model with transfer learning and augmentation
+5. Train with callbacks for optimal performance
+6. Evaluate on test set with detailed metrics
+7. Save model for future use
+8. Deploy via interactive web interface
+
+This system provides an end-to-end solution for garbage classification, from data preprocessing to model deployment, making it suitable for real-world waste management applications.
